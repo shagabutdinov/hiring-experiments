@@ -95,4 +95,5 @@ We've experimented with the following prompts:
 
 - The licensing of [marker](https://github.com/VikParuchuri/marker) forbids it's commercial use, so we potentially need to find another way to convert resumes to md, or find a way to make it legal.
 - The costs could be optimized by sending a single request per resume that includes all questions, instead of asking the questions one-by-one. This should significantly reduce the cost of execution of the script because OpenAI charges us on the number of tokens in the input and output and the resume provided as an input each time the question is asked.
+- Use the workable API to get the list of candidates instead of manual scraping.
 - We promised to review female candidate resumes first, but there is no prompt for that yet.
