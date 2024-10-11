@@ -27,37 +27,69 @@ more efficient code.
 2. Scroll the list of candidates to make the browser to load the full list
 3. Get all candidates from the workable job page by executing in the browser console:
 
-```
-[...document.querySelectorAll('[data-ui="candidate-name"]')].map((e) => e.closest('a')?.href?.match(/\d+$/)[0])
+```javascript
+[...document.querySelectorAll('[data-ui="candidate-name"]')].map(
+  (e) => e.closest("a")?.href?.match(/\d+$/)[0]
+);
 ```
 
 4. Copy the resulting object.
-5. Put it to "./data/ids".
-6. Steal workable cookie and save it to `./cookie`.
-7. Run "./llm-resumes-parse/download-resumes.rb".
+5. Put it to `./data/ids`.
+6. Steal workable cookie and save it to `./data/cookie`.
+7. Set cookie as a global variable: `export COOKIE="$(cat ./data/cookie)"`.
+8. Run `./download-resumes.rb`.
 
 ## Convert resumes to markdown
 
 - Install [marker](https://github.com/VikParuchuri/marker)
 - Run `./convert-pdfs-to-mds.rb`.
 
-## Get the table of candidates
+## Extract the information from the resumes (variant 1, cheaper)
+
+- Put your questions into `./data/questions.json`
+- Run `./convert-mds-to-jsons.rb`
+- Run `./convert-jsons-to-csv.rb`
+
+## Extract the information from the resumes (variant 2, expensier)
 
 - Run `./convert-mds-to-csv.rb > ./data/resumes.csv`.
 - Upload `./data/resumes.csv` to google sheets.
+- Get the OpenAI token from Alex Senov. Make sure that your token has a
+  reasonable spending limit - there is a high chance of burning more money than
+  was intended due to unpredicable nature of the google sheets scheduler.
+- Put your token to `./google-sheets-openai.js`
+- Open google sheets, use the menu "Extensions -> App Scripts" to open the
+  scripts editor.
+- Put the contents of `./google-sheets-openai.js` there
+- Add your questions (prompts) in the first row of the sheet.
+- Use the formula `=ARRAYFORMULA(OPENAI($C3:$C50,D$1))` to invoke openai for resumes listed in column C and the prompt from cell "D1" - apply this formula to all prompts and resumes. It is important to use `ARRAYFORMULA` instead directly calling `OPENAI` function because this reduces optimizes the number of calls to google engine, significantly reducing the overall execution time for the formula.
+- You are on your own now. Good luck!
 
-## Extract the information from the resumes
+## Working with candidates in workable
 
-1. Get the OpenAI token from Alex Senov. Make sure that your token has a
-   reasonable spending limit - there is a high chance of burning more money than
-   was intended due to unpredicable nature of the google sheets scheduler.
-2. Put your token to `./google-sheets-openai.js`
-3. Open google sheets, use the menu "Extensions -> App Scripts" to open the
-   scripts editor.
-4. Put the contents of `./google-sheets-openai.js` there
-5. Add your questions (prompts) in the first row of the sheet.
-6. Use the formula `=ARRAYFORMULA(OPENAI($C3:$C50,D$1))` to invoke openai for resumes listed in column C and the prompt from cell "D1" - apply this formula to all prompts and resumes. It is important to use `ARRAYFORMULA` instead directly calling `OPENAI` function because this reduces optimizes the number of calls to google engine, significantly reducing the overall execution time for the formula.
-7. You are on your own now. Good luck!
+Use the following script to quickly select candidates using their ids in workable (note that you should scroll the list of the candidates manually to the bottom to load all candidates):
+
+```javascript
+const ids = [
+  // list of ids
+];
+
+(async () => {
+  for (const id of ids) {
+    console.log(id);
+
+    document
+      ?.querySelector(
+        `[data-ui="candidate-card"] a[href="/backend/jobs/4087255/browser/applied/candidate/${id}"]`
+      )
+      ?.closest('[data-ui="candidate-card"]')
+      ?.querySelector('input[type="checkbox"]')
+      ?.click();
+
+    await new Promise((resolve) => setTimeout(resolve, 1));
+  }
+})();
+```
 
 ## Potential prompts
 

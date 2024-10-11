@@ -1,26 +1,37 @@
+#!/usr/bin/env ruby
+
 data_path = File.join(Dir.pwd, 'data')
+pdfs_path = File.join(data_path, 'pdfs')
+mds_path = File.join(data_path, 'mds')
 
-# Define the directory path containing the markdown files
-Dir.foreach(File.join(data_path, 'pdfs')) do |filename|
-  if !filename.end_with?('.pdf')
-    next
-  end
+Dir.mkdir(mds_path) if !Dir.exist?(mds_path)
 
+files = Dir.entries(pdfs_path).select { |file| file.end_with?('.pdf') }
+
+files.each.with_index do |filename, index|
   id = filename.gsub('.pdf', '')
-
   raw_resume_path = File.join(data_path, 'mds', id, id + '.md')
+  puts("processing: #{id} (#{index}/#{files.length})")
+
   if !File.exist?(raw_resume_path) || File.size(raw_resume_path).zero?
-    system([
+    pdf_path = File.join(data_path, 'pdfs', filename)
+    puts("converting: #{pdf_path}")
+
+    success = system(
       "marker_single",
-      File.join(data_path, 'pdfs', filename),
-      File.join(data_path, 'mds'),
+      pdf_path,
+      mds_path,
       "--batch_multiplier",
       "2",
       "--max_pages",
       "10",
       "--langs",
       "English",
-    ])
+    )
+
+    if !success
+      raise StandardError.new("Failed to convert pdf to md")
+    end
   end
 
   resume_path = File.join(data_path, 'mds', id + '.md')
