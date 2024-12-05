@@ -32,12 +32,18 @@ data = CSV.generate do |csv|
 
     id = filename.gsub('.json', '')
 
-    answers = JSON.parse(
-      File
-        .read(File.join(answers_path, id + ".json"))
-        .gsub(/\A.*?\{/m, '{')
-        .gsub(/\}.*?\z/m, '}')
-    )
+    answers_file = File.join(answers_path, id + ".json")
+    begin
+      answers = JSON.parse(
+        File
+          .read(answers_file)
+          .gsub(/\A.*?\{/m, '{')
+          .gsub(/\}.*?\z/m, '}')
+      )
+    rescue StandardError => error
+      STDERR.puts("failed to read json file: #{error.to_s} (#{answers_file})")
+      raise error
+    end
 
     info = JSON.parse(
       File.read(File.join(data_path, 'candidates', id + '.json')),

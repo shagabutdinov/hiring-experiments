@@ -70,11 +70,17 @@ more efficient code.
 Use the following script to quickly select candidates using their ids in workable (note that you should scroll the list of the candidates manually to the bottom to load all candidates):
 
 ```javascript
-const ids = [
-  // list of ids
-];
+// scroll document
+document.querySelector('[data-ui="results-container"]').scrollTop = document
+  .querySelector('[data-ui="results-container"]')
+  .scrollHeight();
 
+// select ids
 (async () => {
+  const ids = [
+    // list of ids
+  ];
+
   for (const id of ids) {
     console.log(id);
 
