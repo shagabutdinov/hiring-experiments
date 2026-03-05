@@ -16,7 +16,7 @@ from typing import List, Dict, Any
 from urllib.parse import quote
 
 
-def get_candidates(job_id: str, cookie: str, account: str = "constructor-1") -> List[Dict[str, Any]]:
+def get_candidates(job_id: str, cookie: str, account: str = "XXXX") -> List[Dict[str, Any]]:
     """Fetch all candidates for a given job ID."""
     url = f"https://{account}.workable.com/backend/api/browser/candidates.json_api"
 

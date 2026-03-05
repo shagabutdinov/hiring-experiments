@@ -8,8 +8,8 @@ Copy the resulting object;
 
 ```
 [
-  "https://constructor-1.workable.com/backend/jobs/4087255/browser/applied/candidate/370715911",
-  "https://constructor-1.workable.com/backend/jobs/4087255/browser/applied/candidate/370684553",
+  "https://XXXX.workable.com/backend/jobs/4087255/browser/applied/candidate/370715911",
+  "https://XXXX.workable.com/backend/jobs/4087255/browser/applied/candidate/370684553",
   ...
 ]
 ```
