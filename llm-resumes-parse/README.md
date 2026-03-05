@@ -28,6 +28,10 @@ more efficient code.
 3. Get all candidates from the workable job page by executing in the browser console:
 
 ```javascript
+// scroll document
+document.querySelector('[data-ui="results-container"]').scrollTop =
+  document.querySelector('[data-ui="results-container"]').scrollHeight;
+
 [...document.querySelectorAll('[data-ui="candidate-name"]')].map(
   (e) => e.closest("a")?.href?.match(/\d+$/)[0]
 );
@@ -71,9 +75,8 @@ Use the following script to quickly select candidates using their ids in workabl
 
 ```javascript
 // scroll document
-document.querySelector('[data-ui="results-container"]').scrollTop = document
-  .querySelector('[data-ui="results-container"]')
-  .scrollHeight();
+document.querySelector('[data-ui="results-container"]').scrollTop =
+  document.querySelector('[data-ui="results-container"]').scrollHeight;
 
 // select ids
 (async () => {
